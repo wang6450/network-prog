@@ -1,0 +1,60 @@
+import urllib.request, urllib.parse, urllib.error
+import xml.etree.ElementTree as ET
+
+location = input('Enter location:')
+print('Retrieve',location)
+xml = urllib.request.urlopen(location).read()
+print('Retrieve %d characters' %len(xml))
+commentinfo = ET.fromstring(xml) #使用该方法后相当于已经获取到树根，然后可以直接在树根下面查找child
+comment = commentinfo.findall('comments/comment')
+sum = 0
+for item in comment:
+    sum += int(item.find('count').text)
+    #sum += int(item.text)
+print(sum)
+
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Mar 19 21:58:20 2018
+
+@author: lenovo
+"""
+import urllib.request, urllib.parse, urllib.error
+import json
+
+url = input("Enter location:")
+print('Retrieving',url)
+
+html = urllib.request.urlopen(url).read()
+print('Retrieve %d characters' %len(html))
+info = json.loads(html)
+#comments = info.find('comments')  #不可以使用这种方式，会报错
+comments = info['comments']
+print('count:',len(comments))
+sum = 0
+for item in comments:
+    sum += item['count']
+print(sum)
+
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Mar 19 22:06:24 2018
+
+@author: lenovo
+"""
+
+import  urllib.request, urllib.parse, urllib.error
+import json
+
+place_name = input("Enter a place name: ")
+base_url = "http://python-data.dr-chuck.net/geojson?sensor=false&"
+address_param = urllib.parse.urlencode({'address': place_name})
+target = base_url + address_param
+
+print("Retrieving {0}".format(target))
+connection = urllib.request.urlopen(target)
+raw_data = connection.read()
+print("Retrieved {0} characters".format(len(raw_data)))
+parsed_data = json.loads(raw_data)
+
+print("Place id", parsed_data["results"][0]["place_id"])
